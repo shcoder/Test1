@@ -7,6 +7,14 @@ import java.util.List;
 public class WidgetCollection {
     private final ArrayList<Widget> widgets = new java.util.ArrayList();
 
+    public void makeTestData() {
+        newWidget(10, 10, 20 ,20);
+        newWidget(0, 20, 15 ,15, -2);
+        newWidget(20, 0, 15 ,15);
+        newWidget(40, 0, 15 ,15, 5);
+        newWidget(0, 40, 15 ,15);
+    }
+
     public Widget newWidget() {
         Widget res = new Widget(0);
         widgets.add(res);
@@ -15,11 +23,19 @@ public class WidgetCollection {
 
     public Widget newWidget(int x, int y, int width, int height, int zindex) {
         Widget res = newWidget();
-        res.X = x;
-        res.Y = y;
+        /*res.X = x;
+        res.Y = y;*/
+        res.Point = new Point(x, y);
         res.Width = width;
         res.Height = height;
         res.Zindex = zindex;
+        return res;
+    }
+
+    public Widget newWidget(int x, int y, int width, int height) {
+        Widget res = newWidget(x, y, width, height, 0);
+        // Zindex не указан. размещаем объект самым верхним
+        setTopLevel(res);
         return res;
     }
 
@@ -48,23 +64,8 @@ public class WidgetCollection {
         }
     }
 
-    public Widget newWidget(int x, int y, int width, int height) {
-        Widget res = newWidget(x, y, width, height, 0);
-        // Zindex не указан. размещаем объект самым верхним
-        setTopLevel(res);
-        return res;
-    }
-
     public void add(Widget widget) {
         widgets.add(widget);
-    }
-
-    public void makeTestData() {
-        newWidget(10, 10, 20 ,20);
-        newWidget(0, 20, 15 ,15, -2);
-        newWidget(20, 0, 15 ,15);
-        newWidget(40, 0, 15 ,15, 5);
-        newWidget(0, 40, 15 ,15);
     }
 
     public List<Widget> list() {

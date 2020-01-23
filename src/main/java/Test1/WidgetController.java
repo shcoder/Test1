@@ -8,7 +8,7 @@ import java.util.List;
 
 @RestController
 public class WidgetController {
-    //private ArrayList<Widget> widgets = new ArrayList<Widget>();
+
     private WidgetCollection widgets = new WidgetCollection();
 
     public WidgetController() {
