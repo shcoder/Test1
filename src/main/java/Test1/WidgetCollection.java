@@ -3,29 +3,28 @@ package Test1;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class WidgetCollection {
     private final ArrayList<Widget> widgets = new java.util.ArrayList();
 
     public void makeTestData() {
-        newWidget(10, 10, 20 ,20);
-        newWidget(0, 20, 15 ,15, -2);
-        newWidget(20, 0, 15 ,15);
-        newWidget(40, 0, 15 ,15, 5);
-        newWidget(0, 40, 15 ,15);
+        add(newWidget(10, 10, 20 ,20));
+        add(newWidget(0, 20, 15 ,15, -2));
+        add(newWidget(20, 0, 15 ,15));
+        add(newWidget(40, 0, 15 ,15, 5));
+        add(newWidget(0, 40, 15 ,15));
     }
 
     public Widget newWidget() {
         Widget res = new Widget(0);
-        widgets.add(res);
         return res;
     }
 
     public Widget newWidget(int x, int y, int width, int height, int zindex) {
         Widget res = newWidget();
-        /*res.X = x;
-        res.Y = y;*/
-        res.Point = new Point(x, y);
+        res.X = x;
+        res.Y = y;
         res.Width = width;
         res.Height = height;
         res.Zindex = zindex;
@@ -36,6 +35,18 @@ public class WidgetCollection {
         Widget res = newWidget(x, y, width, height, 0);
         // Zindex не указан. размещаем объект самым верхним
         setTopLevel(res);
+        return res;
+    }
+
+    public Widget newWidget(Widget base) {
+        Widget res = newWidget();
+        res.X = base.X;
+        res.Y = base.Y;
+        res.Zindex = base.Zindex;
+        res.Width = base.Width;
+        res.Height = base.Height;
+        if (res.Zindex == Integer.MAX_VALUE)
+            setTopLevel(res);
         return res;
     }
 
@@ -56,11 +67,11 @@ public class WidgetCollection {
         if (from > to) {
             widgets.stream().
                     filter(w -> w.Zindex < from && w.Zindex >= to).
-                    forEach(w -> w.Zindex -= 1);
+                    forEach(w -> w.Zindex += 1);
         } else {
             widgets.stream().
                     filter(w -> w.Zindex > from && w.Zindex <= to).
-                    forEach(w -> w.Zindex += 1);
+                    forEach(w -> w.Zindex -= 1);
         }
     }
 
@@ -69,7 +80,7 @@ public class WidgetCollection {
     }
 
     public List<Widget> list() {
-        return widgets;
+        return widgets.stream().sorted((w1, w2) -> Integer.compare(w1.Zindex, w2.Zindex)).collect(Collectors.toList());
     }
 
     public Widget get(long Id) {
@@ -83,4 +94,9 @@ public class WidgetCollection {
         widgets.remove(get(Id));
     }
 
+    public void replace(Widget widget) {
+        Widget old = get(widget.Id);
+        int pos = widgets.indexOf(old);
+        widgets.set(pos, widget);
+    }
 }

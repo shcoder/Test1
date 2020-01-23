@@ -22,13 +22,8 @@ public class WidgetController {
 
     @PostMapping("/widgets/")
     public Widget newWidget(@RequestBody Widget widget) {
-        if (widget.Zindex == Integer.MAX_VALUE) // индекс не указан
-            widgets.setTopLevel(widget);
-        else
-            widgets.shiftLevelUp(widget.Zindex);
-
-        Widget res = widgets.newWidget();
-        res.updateBy(widget);
+        Widget res = widgets.newWidget(widget);
+        widgets.add(res);
         return res;
     }
 
@@ -44,9 +39,11 @@ public class WidgetController {
 
     @PutMapping("/widgets/{id}")
     public Widget update(@PathVariable long id, @RequestBody Widget widget) {
-        Widget res = widgets.get(id);
-        widgets.shiftLevelFromTo(res.Zindex, widget.Zindex);
+        Widget res = new Widget(id);
         res.updateBy(widget);
+        Widget old = widgets.get(id);
+        widgets.shiftLevelFromTo(old.Zindex, widget.Zindex);
+        widgets.replace(res);
         return res;
     }
 }
